@@ -11,7 +11,7 @@ TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfT_QQ.oga8BJy2z5xLq_sVtncspZZqytg'
 
 client = Bot(command_prefix="-")
 
-@client.command(name="Hello", description="Says hallo",pass_context = True)
+@client.command(name="hello", description="Says hallo",pass_context = True)
 async def hello(ctx):
     await client.say("Hello " + ctx.message.author.mention)
 
@@ -21,9 +21,9 @@ async def hello(ctx):
 async def random(ctx):
     await client.say(format(randint(0,100)) + ctx.message.author.mention)
 
-@client.command(name="Ping", description="Getting a pulse from bot to see if it's online")
+@client.command(name="ping",brief="Use it only if you are thinkning bot is going to die", description="Getting a pulse from bot to see if it's online")
 async def ping():
-    await client.say("Pong!")
+    await client.say("Pong!" + ':ping_pong:')
     
 @client.event
 async def on_member_join(member):
