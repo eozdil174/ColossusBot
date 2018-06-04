@@ -1,11 +1,5 @@
 #Colossus' basic functions
-#Just a test comment. Nothing to see here...
-#Turtles!!!
-#cool and new note
 import discord
-#some test lines
-#some more test lines
-
 import asyncio
 import aiohttp
 import random
@@ -17,7 +11,6 @@ links = ['gwH4jqW','ypVMXd4'] #approved discord invites
 TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfT_QQ.oga8BJy2z5xLq_sVtncspZZqytg'
 
 client = Bot(command_prefix="-")
-
 
 
 @client.command(name="hello", description="Says hallo",pass_context = True)
@@ -57,9 +50,24 @@ async def on_member_join(member):
 
 @client.event
 async def on_member_remove(member):
-    leaveLogChannel = client.get_channel(437688399755870208)
     await client.send_message(discord.Object(id='437688399755870208'), "User left " + member.display_name + ' #' + member.discriminator + "\nID: " + member.id)
     
+@client.event
+async def on_message(message):
+    await client.process_commands(message)
+    msg = message.content #makes user message a variable   
+    if "discord.gg" in msg: #tests for "discord.gg" in message
+        print('Server link detected !')
+        print('Message posted by ' + message.author.display_name) #Printing the author of the server message
+        print('Message : ' + msg)
+        invtest = 1 #sets up variable that controls if the invite is in the links array
+        for link in links: #tests user message for every item in array
+            if link in msg:  
+                invtest = 0 #if the message contains the variable is set to false
+        if invtest == 1: 
+            await client.delete_message(message) #deletes the message if the invite isn't approved
+           # await client.say(message.get_room, message.author.mention + " Unknown server invite discovered ! \n Please use following links for inviting people;\n \n discord.gg/gwH4jqW \n discord.gg/ypVMXd4")
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -67,19 +75,6 @@ async def on_ready():
     print(client.user.id)
     print('------')
     await client.change_presence(game=Game(name="with people"))
-
-@client.event
-async def on_message(message):
-    print('message recieved')#test thing, prints if a message is recieved
-    msg = message.content #makes user message a variable   
-    if "discord.gg" in msg: #tests for "discord.gg" in message
-        invtest = 1 #sets up variable that controls if the invite is in the links array
-        for link in links: #tests user message for every item in array
-            if link in msg:  
-                invtest = 0 #if the message contains the variable is set to false
-        if invtest == 1: 
-            await client.delete_message(message) #deletes the message if the invite isn't approved
-            
 
 
 client.run(TOKEN)
