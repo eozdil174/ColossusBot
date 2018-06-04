@@ -12,10 +12,13 @@ import random
 from random import randint
 from discord.ext.commands import Bot
 from discord import Game
+links = ['gwH4jqW','ypVMXd4'] #approved discord invites
 
 TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfT_QQ.oga8BJy2z5xLq_sVtncspZZqytg'
 
 client = Bot(command_prefix="-")
+
+
 
 @client.command(name="hello", description="Says hallo",pass_context = True)
 async def hello(ctx):
@@ -51,6 +54,7 @@ async def on_member_join(member):
     
     await client.send_message(discord.Object(id='437654104827756544'), welcomeMessage)
 
+
 @client.event
 async def on_member_remove(member):
     leaveLogChannel = client.get_channel(437688399755870208)
@@ -64,6 +68,18 @@ async def on_ready():
     print('------')
     await client.change_presence(game=Game(name="with people"))
 
+@client.event
+async def on_message(message):
+    print('message recieved')#test thing, prints if a message is recieved
+    msg = message.content #makes user message a variable   
+    if "discord.gg" in msg: #tests for "discord.gg" in message
+        invtest = 1 #sets up variable that controls if the invite is in the links array
+        for link in links: #tests user message for every item in array
+            if link in msg:  
+                invtest = 0 #if the message contains the variable is set to false
+        if invtest == 1: 
+            await client.delete_message(message) #deletes the message if the invite isn't approved
+            
+
+
 client.run(TOKEN)
-
-
