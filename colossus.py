@@ -1,6 +1,6 @@
 #Colossus' basic functions
 #Just a test comment. Nothing to see here...
-#test
+#Turtles!
 import discord
 import asyncio
 import aiohttp
