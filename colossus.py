@@ -1,6 +1,7 @@
 #Colossus' basic functions
 #Just a test comment. Nothing to see here...
 #Turtles!!!
+#cool and new note
 import discord
 #some test lines
 #some more test lines
