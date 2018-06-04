@@ -1,5 +1,8 @@
 #Colossus' basic functions
 import discord
+#some test lines
+#some more test lines
+
 import asyncio
 import aiohttp
 import random
