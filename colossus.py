@@ -8,7 +8,7 @@ from discord.ext.commands import Bot
 from discord import Game
 links = ['gwH4jqW','ypVMXd4'] #approved discord invites
 
-TOKEN = ''
+TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfnW3A.AeK5fqu5fl4dM5RlJvk8JTQRtnY'
 
 client = Bot(command_prefix="-")
 
