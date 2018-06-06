@@ -13,7 +13,7 @@ from random import randint
 from discord.ext.commands import Bot
 from discord import Game
 
-TOKEN = ''
+TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfnW3A.AeK5fqu5fl4dM5RlJvk8JTQRtnY'
 
 client = Bot(command_prefix="-")
 
