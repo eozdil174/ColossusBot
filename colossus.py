@@ -29,12 +29,10 @@ async def ping():
 
 @client.command(name="feedback", brief="Leave anonymous feedback.", description="You can leave anonymous feedback. Your message will be removed and will be anonymously sent to mods.")
 async def feedback(message):
-    await client.process_commands(message)
-    msg = message.content
-    #await client.process_commands(message)
-    #feedback_msg = message.content
-    #await client.send_message(discord.Object(id='454177239127293982'), feedback_msg)
-    #await client.delete_message(message)
+
+    await client.send_message(discord.Object(id='454177239127293982'), message)
+    await client.delete_message()
+    
     
     
 @client.event
