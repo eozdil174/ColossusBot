@@ -1,4 +1,4 @@
-#Colossus' basic functions for anything
+#Colossus' basic functions
 import discord
 import asyncio
 import aiohttp
