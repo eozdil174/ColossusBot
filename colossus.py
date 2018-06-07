@@ -39,6 +39,7 @@ async def feedback(message):
         await client.delete_message(message.message)
     except:
         print("I can't delete that message!")
+
 #Function for adding the "Event" role to user    
 @client.command(name="event_signup", brief="Saves you to event members list", description="Saves you to member list for the coming event", pass_context = True)
 async def event_signup(text):
