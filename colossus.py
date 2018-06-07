@@ -2,10 +2,10 @@
 import discord
 import asyncio
 import aiohttp
-import random
 from random import randint
 from discord.ext.commands import Bot
 from discord import Game
+
 links = ['gwH4jqW','ypVMXd4'] #approved discord invites
 
 TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfnW3A.AeK5fqu5fl4dM5RlJvk8JTQRtnY'
@@ -17,9 +17,7 @@ client = Bot(command_prefix="-")
 async def hello(ctx):
     await client.say("Hello " + ctx.message.author.mention)
 
-@client.command(name='random',category='utility',
-                description=": Gives a random number between 0 and 100",
-                brief="Giving random number",pass_context = True)
+@client.command(name='random',category='utility',description=": Gives a random number between 0 and 100",brief="Giving random number",pass_context = True)
 async def random(ctx):
     await client.say(format(randint(0,100)) + ctx.message.author.mention)
 
@@ -27,6 +25,15 @@ async def random(ctx):
 async def ping():
     await client.say("Pong!" + ':ping_pong:')
     
+@client.command(name="event_signup", brief="Automatically makes you an event member", description="Become an member for the further event")
+async def event_signup(event_name):
+    #event role id : 454180351934464001
+    for r in event_name.author.roles:
+        if r.id == 454180351934464001:
+            await client.say("You already signed up for that event. Write 'event_quit' for quitting the event")
+        
+
+
 @client.event
 async def on_member_join(member):
     
