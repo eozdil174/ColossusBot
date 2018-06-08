@@ -46,36 +46,56 @@ async def venting(message):
     await client.send_message(discord.Object(id='454704544924827649'), message.message.content[8:])
     await client.say("Alright posted to #venting !")
 
-#Function for adding the "Event" role to user    
-@client.command(name="event_signup", brief="Saves you to event members list", description="Saves you to member list for the coming event", pass_context = True)
-async def event_signup(text):
+#Function for creating events
+@client.command(name="event_create", brief="Creates an event", description="Creates an event for the server", pass_context = True)
+async def event_create(text):
     user = text.message.author      #Getting the user who wants the role
-    role = get(user.server.roles, name="Event")     #Getting the "Event" role
+    eventer_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
+    event_room = discord.Object(id="454716411647098881")
     
-    #If user already has the role
-    if role in user.roles:
-        await client.say(user.mention + " You are already on the event list")
-        return
-    #If user doesn't has the role
+    if eventer_role in user.roles:
+        botmsg = await client.send_message(event_room, text.message.content[13:] + "\n \n" + "For signing up to event. Click to :white_check_mark: \nFor quitting from the event list press :negative_squared_cross_mark:")
+        await client.add_reaction(botmsg, '✅')
+        await client.add_reaction(botmsg, '❎')
     else:
-        await client.add_roles(user , role)
-        await client.say(user.mention + " Alright added to event list!")
+        await client.send_message(event_room, user.mention + " Sorry. You don't have permission for doing that. Please contact with a moderator for creating that event")
+
+@client.event
+async def on_reaction_add(reaction, user):  
+    
+    role = get(user.server.roles, name="Event")     #Getting the "Event" role
+    roleChannelId = "454716411647098881"
+    
+    if reaction.message.channel.id != roleChannelId:
+        return #So it only happens in the specified channel
+    if str(reaction.emoji) == "✅":
+        await client.add_roles(user, role)
+
+    elif str(reaction.emoji) == '❎':
+        await client.remove_roles(user, role)
 
 #Removing the "Event" role
-@client.command(name="event_quit", brief="Deletes you from event members list", description="Deletes you from member list for the coming event", pass_context = True)
-async def event_quit(text):
-    user = text.message.author      #Getting the user who doesn't wants the role anymore
-    role = get(user.server.roles, name="Event")     #Getting the "Event" role
+@client.command(name="event_reset", brief="Resets the Event role", description="Resets the event role", pass_context = True)
+async def event_reset(ctx):
     
-    #If user has the role
-    if role in user.roles:
-        await client.remove_roles(user, role)   #Remove the role from the user
-        await client.say(user.mention + " OK. I removed you from the event list")
-        return
-    #If user doesn't has the rule
+    eventer_role = get(ctx.message.author.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
+    if eventer_role in ctx.message.author.roles:
+
+        role = get(ctx.message.author.server.roles, name="Event")     #Getting the "Event" role
+        
+        members = ctx.message.server.members    
+        for member in members:
+            #If user has the role
+            if role in member.roles:
+                await client.remove_roles(member, role)   #Remove the role from the user
+                print("\nRemoved the 'Event' role from " + str(member))
+                continue
+            #If user doesn't has the rule
+            else:
+                continue
+        client.say("Done! Event role removed from all users.")
     else:
-        await client.say(user.mention + " You are not in the list. You can sign up by typing '-event_signup' .")
-        return
+        client.say(ctx.message.author.mention + " You don't have the permission for doing that")
 
 #A trigger which activates when a member joins the server
 @client.event
