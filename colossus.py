@@ -40,6 +40,12 @@ async def feedback(message):
     except:
         print("I can't delete that message!")
 
+#Venting feature for venting
+@client.command(name="venting", brief="Send an anoymous messages", description="A feature for venting without showing yourself", pass_context=True)
+async def venting(message):
+    await client.send_message(discord.Object(id='454704544924827649'), message.message.content[8:])
+    await client.say("Alright posted to #venting !")
+
 #Function for adding the "Event" role to user    
 @client.command(name="event_signup", brief="Saves you to event members list", description="Saves you to member list for the coming event", pass_context = True)
 async def event_signup(text):
