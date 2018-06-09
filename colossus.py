@@ -15,7 +15,7 @@ TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfnW3A.AeK5fqu5fl4dM5RlJvk8JTQRtnY'
 client = Bot(command_prefix="-")
 
 #A basic hello function
-@client.command(name="hello", description="Says hallo",pass_context = True)
+@client.command(name="hello", description="Says hello",pass_context = True)
 async def hello(ctx):
     await client.say("Hello " + ctx.message.author.mention)
 
@@ -33,39 +33,70 @@ async def ping():
 @client.command(name="feedback", brief="Leave anonymous feedback.", description="You can leave anonymous feedback. Your message will be removed and will be anonymously sent to mods.", pass_context = True)
 async def feedback(message):
 
-    await client.send_message(discord.Object(id='454177239127293982'), message.message.content[9:])
-    await client.delete_message(message.message)
-    
-#Function for adding the "Event" role to user    
-@client.command(name="event_signup", brief="Saves you to event members list", description="Saves you to member list for the coming event", pass_context = True)
-async def event_signup(text):
-    user = text.message.author      #Getting the user who wants the role
-    role = get(user.server.roles, name="Event")     #Getting the "Event" role
-    
-    #If user already has the role
-    if role in user.roles:
-        await client.say(user.mention + " You are already on the event list")
-        return
-    #If user doesn't has the role
-    else:
-        await client.add_roles(user , role)
-        await client.say(user.mention + " Alright added to event list!")
+    await client.send_message(discord.Object(id='454173550434058240'), message.message.content[9:])     #Post the message to #feedback channel
 
-#Removing the "Event" role
-@client.command(name="event_quit", brief="Deletes you from event members list", description="Deletes you from member list for the coming event", pass_context = True)
-async def event_quit(text):
-    user = text.message.author      #Getting the user who doesn't wants the role anymore
-    role = get(user.server.roles, name="Event")     #Getting the "Event" role
+    try:
+        await client.delete_message(message.message)
+    except:
+        print("I can't delete that message!")
+
+#Venting feature for venting
+@client.command(name="venting", brief="Send an anoymous messages", description="A feature for venting without showing yourself", pass_context=True)
+async def venting(message):
+    await client.send_message(discord.Object(id='454969449590685696'), message.message.content[8:])     #Post the message to #venting channel
+    await client.say("Alright posted to #venting !")
+
+#Function for creating events
+@client.command(name="event_create", brief="Creates an event", description="Creates an event for the server", pass_context = True)
+async def event_create(text):
+    user = text.message.author      #Getting the user who wants the role
+    eventer_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
+    event_room = discord.Object(id="437658178579333130")    #The id of the room which will be used for posting event messages
     
-    #If user has the role
-    if role in user.roles:
-        await client.remove_roles(user, role)   #Remove the role from the user
-        await client.say(user.mention + " OK. I removed you from the event list")
-        return
-    #If user doesn't has the rule
+    if eventer_role in user.roles:      #Checking the Event Creator for the user who tried to create event
+        botmsg = await client.send_message(event_room, text.message.content[13:] + "\n \n" + "For signing up to event, press :white_check_mark: \nFor quitting from the event list, press :negative_squared_cross_mark:")
+        await client.add_reaction(botmsg, '✅')
+        await client.add_reaction(botmsg, '❎')
     else:
-        await client.say(user.mention + " You are not in the list. You can sign up by typing '-event_signup' .")
-        return
+        await client.send_message(event_room, user.mention + " Sorry. You don't have permission for doing that. Please contact with a moderator for creating that event")
+
+#The trigger for assigning the "Event" role by reactions
+@client.event
+async def on_reaction_add(reaction, user):  
+    
+    role = get(user.server.roles, name="Event Member")     #Getting the "Event" role
+    roleChannelId = "437658178579333130"
+    
+    if reaction.message.channel.id != roleChannelId:
+        return #So it only happens in the specified channel
+    if str(reaction.emoji) == "✅":      #If user chooses that reaction give the role
+        await client.add_roles(user, role)
+
+    elif str(reaction.emoji) == '❎':    #If user chooses that reaction remove the role
+        await client.remove_roles(user, role)
+
+#Removing the "Event" role from everyone
+@client.command(name="event_reset", brief="Resets the Event role", description="Resets the event role", pass_context = True)
+async def event_reset(text):
+    user = text.message.author                                        #Getting the user who wrote the command
+    event_creator_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
+    
+    if event_creator_role in user.roles:                #If user has the Event Creator role
+        role = get(user.server.roles, name="Event Member")     #Getting the "Event" role
+        
+        members = text.message.server.members           #Getting all the members in the server
+        for member in members:                          #For every member in the server this will remove the role who has it
+            #If user has the role
+            if role in member.roles:
+                await client.remove_roles(member, role)   #Remove the role from the user
+                print("\nRemoved the 'Event' role from " + str(member))
+                continue
+            #If user doesn't has the role
+            else:
+                continue
+        await client.send_message(text.message.channel ,"Done! Event role removed from all users.")
+    else:
+        await client.send_message(text.message.channel ,user.mention + " You don't have the permission for doing that")
 
 #A trigger which activates when a member joins the server
 @client.event
@@ -97,15 +128,15 @@ async def on_member_remove(member):
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    msg = message.content #makes user message a variable   
-    if "discord.gg" in msg: #tests for "discord.gg" in message
+    msg = message.content           #makes user message a variable   
+    if "discord.gg" in msg:         #tests for "discord.gg" in message
         print('Server link detected !')
         print('Message posted by ' + message.author.display_name) #Printing the author of the server message
         print('Message : ' + msg)
-        invtest = 1 #sets up variable that controls if the invite is in the links array
-        for link in links: #tests user message for every item in array
+        invtest = 1                 #sets up variable that controls if the invite is in the links array
+        for link in links:          #tests user message for every item in array
             if link in msg:  
-                invtest = 0 #if the message contains the variable is set to false
+                invtest = 0         #if the message contains the variable is set to false
         if invtest == 1: 
             await client.delete_message(message) #deletes the message if the invite isn't approved
            # await client.say(message.get_room, message.author.mention + " Unknown server invite discovered ! \n Please use following links for inviting people;\n \n discord.gg/gwH4jqW \n discord.gg/ypVMXd4")
@@ -113,8 +144,7 @@ async def on_message(message):
 #Basic function which runs on command line
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
+    print('Logged in as ' + client.user.name)
     print('------')
     await client.change_presence(game=Game(name="with people"))
 
