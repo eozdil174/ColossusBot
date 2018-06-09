@@ -33,7 +33,7 @@ async def ping():
 @client.command(name="feedback", brief="Leave anonymous feedback.", description="You can leave anonymous feedback. Your message will be removed and will be anonymously sent to mods.", pass_context = True)
 async def feedback(message):
 
-    await client.send_message(discord.Object(id='454177239127293982'), message.message.content[9:])     #Post the message to #feedback channel
+    await client.send_message(discord.Object(id='454173550434058240'), message.message.content[9:])     #Post the message to #feedback channel
 
     try:
         await client.delete_message(message.message)
@@ -43,7 +43,7 @@ async def feedback(message):
 #Venting feature for venting
 @client.command(name="venting", brief="Send an anoymous messages", description="A feature for venting without showing yourself", pass_context=True)
 async def venting(message):
-    await client.send_message(discord.Object(id='454704544924827649'), message.message.content[8:])     #Post the message to #venting channel
+    await client.send_message(discord.Object(id='454969449590685696'), message.message.content[8:])     #Post the message to #venting channel
     await client.say("Alright posted to #venting !")
 
 #Function for creating events
@@ -51,7 +51,7 @@ async def venting(message):
 async def event_create(text):
     user = text.message.author      #Getting the user who wants the role
     eventer_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
-    event_room = discord.Object(id="454716411647098881")    #The id of the room which will be used for posting event messages
+    event_room = discord.Object(id="437658178579333130")    #The id of the room which will be used for posting event messages
     
     if eventer_role in user.roles:      #Checking the Event Creator for the user who tried to create event
         botmsg = await client.send_message(event_room, text.message.content[13:] + "\n \n" + "For signing up to event, press :white_check_mark: \nFor quitting from the event list, press :negative_squared_cross_mark:")
@@ -64,8 +64,8 @@ async def event_create(text):
 @client.event
 async def on_reaction_add(reaction, user):  
     
-    role = get(user.server.roles, name="Event")     #Getting the "Event" role
-    roleChannelId = "454716411647098881"
+    role = get(user.server.roles, name="Event Member")     #Getting the "Event" role
+    roleChannelId = "437658178579333130"
     
     if reaction.message.channel.id != roleChannelId:
         return #So it only happens in the specified channel
@@ -82,7 +82,7 @@ async def event_reset(text):
     event_creator_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
     
     if event_creator_role in user.roles:                #If user has the Event Creator role
-        role = get(user.server.roles, name="Event")     #Getting the "Event" role
+        role = get(user.server.roles, name="Event Member")     #Getting the "Event" role
         
         members = text.message.server.members           #Getting all the members in the server
         for member in members:                          #For every member in the server this will remove the role who has it
@@ -144,8 +144,7 @@ async def on_message(message):
 #Basic function which runs on command line
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
+    print('Logged in as ' + client.user.name)
     print('------')
     await client.change_presence(game=Game(name="with people"))
 
