@@ -2,6 +2,7 @@
 import discord
 import asyncio
 import aiohttp
+import roleManagement as rM
 from random import randint
 from discord.ext import commands
 from discord.ext.commands import Bot
@@ -18,7 +19,7 @@ client = Bot(command_prefix="-")
 @client.command(name="hello", description="Says hello",pass_context = True)
 async def hello(ctx):
     await client.say("Hello " + ctx.message.author.mention)
-
+    rM.get_roles(ctx.message.author)
 #Creates a random number between 0 and 100
 @client.command(name='random',category='utility',description=": Gives a random number between 0 and 100",brief="Giving random number",pass_context = True)
 async def random(ctx):
@@ -28,6 +29,19 @@ async def random(ctx):
 @client.command(name="ping",brief="Use it only if you are thinkning bot is going to die", description="Getting a pulse from bot to see if it's online")
 async def ping():
     await client.say("Pong!" + ':ping_pong:')
+
+@client.command(name="roles", brief="Shows the roles", description="Shows all the roles in the server",pass_context = True)
+async def roles(message):
+    user = message.message.author
+    roles = []
+    for role in user.server.roles:
+        roles.append('• ' + str(role))
+    roles.sort()
+
+    embed = discord.Embed(title=("The role list for  " + str(user.server.name)), color=0x008000)
+    embed.add_field(name="Roles", value= ('\n'.join(roles)) , inline=True)
+
+    await client.send_message(message.message.channel, embed=embed)
 
 #Feedback feature which deletes the user message after posting it to a secret channel
 @client.command(name="feedback", brief="Leave anonymous feedback.", description="You can leave anonymous feedback. Your message will be removed and will be anonymously sent to mods.", pass_context = True)
@@ -40,19 +54,34 @@ async def feedback(message):
     except:
         print("I can't delete that message!")
 
+@client.command(pass_context=True)
+async def wtfMsg(message):
+    if message.message.author == message.message.author.server.owner:
+        await client.send_message(discord.Object(id='450150175290163221'), message.message.content[8:])
+
+    elif message.message.author.id == '231815469848461314':
+        await client.send_message(discord.Object(id='450150175290163221'), "I'm not taking orders from you")
+    else:
+        await client.send_message(discord.Object(id='450150175290163221'), "I don't think so")
 #Venting feature for venting
 @client.command(name="venting", brief="Send an anoymous messages", description="A feature for venting without showing yourself", pass_context=True)
 async def venting(message):
     await client.send_message(discord.Object(id='454969449590685696'), message.message.content[8:])     #Post the message to #venting channel
     await client.say("Alright posted to #venting !")
 
+@client.command(name="addRole", brief="Adds role to user", description="Adds role to message owner", pass_context=True)
+async def addRole(message):
+    user = message.message.author
+    role = message.message.content[9:]
+
+    rM.add_role(user, role)
 #Function for creating events
 @client.command(name="event_create", brief="Creates an event", description="Creates an event for the server", pass_context = True)
 async def event_create(text):
     user = text.message.author      #Getting the user who wants the role
     eventer_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
     event_room = discord.Object(id="437658178579333130")    #The id of the room which will be used for posting event messages
-    
+
     if eventer_role in user.roles:      #Checking the Event Creator for the user who tried to create event
         botmsg = await client.send_message(event_room, text.message.content[13:] + "\n \n" + "For signing up to event, press :white_check_mark: \nFor quitting from the event list, press :negative_squared_cross_mark:")
         await client.add_reaction(botmsg, '✅')
@@ -62,11 +91,11 @@ async def event_create(text):
 
 #The trigger for assigning the "Event" role by reactions
 @client.event
-async def on_reaction_add(reaction, user):  
-    
+async def on_reaction_add(reaction, user):
+
     role = get(user.server.roles, name="Event Member")     #Getting the "Event" role
     roleChannelId = "437658178579333130"
-    
+
     if reaction.message.channel.id != roleChannelId:
         return #So it only happens in the specified channel
     if str(reaction.emoji) == "✅":      #If user chooses that reaction give the role
@@ -80,10 +109,10 @@ async def on_reaction_add(reaction, user):
 async def event_reset(text):
     user = text.message.author                                        #Getting the user who wrote the command
     event_creator_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
-    
+
     if event_creator_role in user.roles:                #If user has the Event Creator role
         role = get(user.server.roles, name="Event Member")     #Getting the "Event" role
-        
+
         members = text.message.server.members           #Getting all the members in the server
         for member in members:                          #For every member in the server this will remove the role who has it
             #If user has the role
@@ -101,7 +130,7 @@ async def event_reset(text):
 #A trigger which activates when a member joins the server
 @client.event
 async def on_member_join(member):
-    
+
     welcomeMessage = (member.mention + " Welcome to Café Tesla. Please have a seat. Your coffee will be served in a minute. \n"+
 
                                         "\nWe have MBTI type tags available for everyone. If you want to put your type's tag on to your profile: go to #bot_interactions and type\n"+
@@ -116,7 +145,7 @@ async def on_member_join(member):
 
 
                                         "\nIf you need any help or questions you can ask them in #feedback channel. Have fun !\n")
-    
+
     await client.send_message(discord.Object(id='437654104827756544'), welcomeMessage)
 
 #A trigger which activates when a member leaves
@@ -124,20 +153,20 @@ async def on_member_join(member):
 async def on_member_remove(member):
     await client.send_message(discord.Object(id='437688399755870208'), "User left " + member.display_name + ' #' + member.discriminator + "\nID: " + member.id)
 
-#Discord server advirtesement prevention function    
+#Discord server advirtesement prevention function
 @client.event
 async def on_message(message):
     await client.process_commands(message)
-    msg = message.content           #makes user message a variable   
+    msg = message.content           #makes user message a variable
     if "discord.gg" in msg:         #tests for "discord.gg" in message
         print('Server link detected !')
         print('Message posted by ' + message.author.display_name) #Printing the author of the server message
         print('Message : ' + msg)
         invtest = 1                 #sets up variable that controls if the invite is in the links array
         for link in links:          #tests user message for every item in array
-            if link in msg:  
+            if link in msg:
                 invtest = 0         #if the message contains the variable is set to false
-        if invtest == 1: 
+        if invtest == 1:
             await client.delete_message(message) #deletes the message if the invite isn't approved
            # await client.say(message.get_room, message.author.mention + " Unknown server invite discovered ! \n Please use following links for inviting people;\n \n discord.gg/gwH4jqW \n discord.gg/ypVMXd4")
 
