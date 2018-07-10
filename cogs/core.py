@@ -5,6 +5,9 @@ That file contains some basic and useful features for the bot.
 import discord
 from discord.ext import commands
 import datetime
+import sys
+sys.path.append('C:\\Users\\eozdi\\Documents\\ColossusBot\\database')
+import DBLib as DB
 
 class Core(object):
 
@@ -77,6 +80,12 @@ class Core(object):
     async def on_message(self, message):
 
         msg = message.content           #makes user message a variable
+        currentExp = DB.getExp(message.author.discriminator)
+        points = (len(message.content) * 0.4)
+        newExp = currentExp + points
+        DB.addExp(message.author.discriminator, newExp)
+
+        print("added"+ str(newExp)+ "exp to user")
 
         #Foreign invite preventation feature
         if "discord.gg" in msg:         #tests for "discord.gg" in message
