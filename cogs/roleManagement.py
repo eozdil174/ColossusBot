@@ -7,27 +7,35 @@ import discord
 import asyncio
 from discord.ext import commands
 from discord.utils import get
+import sys
+sys.path.append("C://Users//eozdi//Documents//ColossusBot//database")
+import DBLib as db
 
-roles = []                                                                  #Saving all the available roles to that list
-seriousRoles = {'Admin', 'Intern','Event Creator','Bot','@everyone'}        #The special roles
+def ifAdmin(message):
+    user = message.message.author
+    adminRoles = ["Admin", "Staff", "Janitor", "Intern", "The Shop Owner"]
+    userRoles = list(set(str(role) for role in user.roles) & set(adminRoles))
 
-def get_roles(message):                                                 #Function for getting the available roles
-    roles.clear()                                                       #Cleaning the list to prevent duplicate roles
-    for role in message.message.author.server.roles:                    #For every role in the current server
-        if str(role) not in seriousRoles:                               #If the role is not in seriousRoles
-            roles.append(str(role))                                     #Put it to role list
-    roles.sort()                                                        #Sort the roles list to make it look organized
+
+    if len(userRoles) >= 1 and len(userRoles) != 0:                  #Most stupid code I've ever written. But it works. And it's logical(!)...
+        return True
+    else:
+        print (user.display_name + ' #' + user.discriminator + " tried to use an admin command !")
+        return False
+
 
 class roleManagement(object):
 
-    def __init__(self, bot):            #Initialize bot
+    def __init__(self, bot, roles = []):            #Initialize bot
         self.bot = bot
+        self.roles = db.getRoles()
 
     #Function for showing every available role
-    @commands.command(brief="Shows a list for the available roles",pass_context = True)
-    async def roles(self,message):
-        get_roles(message)          #Trigger the get_role function
-
+    @commands.command(brief="Shows a list for the available roles", pass_context = True)
+    async def showRoles(self, message):
+        roles = []
+        for role in self.roles:
+            roles.append("".join(role))
         embed = discord.Embed(title=("The role list for  " + str(message.message.author.server.name)), color=0x53ad80)      #Create the custom embed
         embed.add_field(name="Available roles", value= ("• "+'\n• '.join(roles)) , inline=True)
 
@@ -64,6 +72,32 @@ class roleManagement(object):
 
         elif role not in user.roles:            #If user doesn't has the role just kindly say it
             await self.bot.say("You don't have that role !")
+
+    @commands.command(brief="Getting all the roles", pass_context=True)
+    async def getRoles(self, message):
+        if ifAdmin(message):
+            self.roles = db.getRoles()
+
+            specialRoles = ["Admin", "Bot", "@everyone", "Intern", "Event Creator"]
+
+            if not self.roles or message.message.content.endswith(" +update"):
+                db.clearRoles()
+                roles = {}
+                for role in message.message.server.roles:
+                    if str(role) not in specialRoles:
+                        roles[role] = True
+                    else:
+                        roles[role] = False
+                db.saveRoles(roles)
+                self.roles = db.getRoles()
+                await self.bot.say("Roles saved !")
+
+            else:
+                await self.bot.say("There is already " + str(len(self.roles)) +" self assignable role saved to database ! If you want to update roles, you know the command. Right ?")
+
+        else:
+            await self.bot.say("Sorry, you don't have the permission to do that.")
+
 
 #Setting the bot and the class
 def setup(bot):

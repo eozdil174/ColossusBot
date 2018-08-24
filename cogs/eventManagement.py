@@ -23,30 +23,32 @@ class eventManagement(object):
     #Creating the custom embed for the event
     @commands.command(brief="Create the event embed",pass_context=True)
     async def event_create(self, message):
-
-        if message.message.content.startswith("-event_create eTitle"):              #Set the title
-            if self.title == "Not Assigned":
-                self.title = message.message.content[21:]
-                await self.bot.say("Title set as : " + str(self.title))
-
-
-        if message.message.content.startswith("-event_create eDesc"):       #Set the description
-             if self.desc == "Not Assigned":
-                self.desc = message.message.content[20:]
-                await self.bot.say("Description set as : " + self.desc)
+        event_creator_role = get(user.server.roles, name="Event Creator")
+        if event_creator_role in message.message.author.roles:
+            if message.message.content.startswith("-event_create eTitle"):              #Set the title
+                if self.title == "Not Assigned":
+                    self.title = message.message.content[21:]
+                    await self.bot.say("Title set as : " + str(self.title))
 
 
-        if message.message.content.startswith("-event_create eClock"):     #Set the clockURL
-            if self.clock == "Not Assigned":
-                self.clock = message.message.content[21:]
-                await self.bot.say("ClockURL set as : " + self.clock)
+            if message.message.content.startswith("-event_create eDesc"):       #Set the description
+                 if self.desc == "Not Assigned":
+                    self.desc = message.message.content[20:]
+                    await self.bot.say("Description set as : " + self.desc)
 
 
-        if message.message.content.startswith("-event_create eDesTime"):        #Set the designated time
-            if self.desTime == "Not Assigned":
-                self.desTime = message.message.content[23:]
-                await self.bot.say("Designated Time set as : " + self.desTime)
+            if message.message.content.startswith("-event_create eClock"):     #Set the clockURL
+                if self.clock == "Not Assigned":
+                    self.clock = message.message.content[21:]
+                    await self.bot.say("ClockURL set as : " + self.clock)
 
+
+            if message.message.content.startswith("-event_create eDesTime"):        #Set the designated time
+                if self.desTime == "Not Assigned":
+                    self.desTime = message.message.content[23:]
+                    await self.bot.say("Designated Time set as : " + self.desTime)
+        else:
+            await self.bot.say("Sorry you don't have the permissionto do that.")
 
 
     @commands.command(pass_context = True)

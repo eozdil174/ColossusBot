@@ -2,13 +2,17 @@
 import sqlite3 as sqldb
 
 #Connect to the database. If the database doesn't exists if will be automatically created
-connection = sqldb.connect('C:\\Users\\eozdi\\Documents\\ColossusBot\\database\\userBase.db')
+connection = sqldb.connect('C:\\Users\\eozdi\\Documents\\ColossusBot\\database\\serverDatabase.db')
 
 #Setting a cursor for sending commands to database
 cursor = connection.cursor()
 
 #Creating a database table or checking the database
-cursor.execute('''CREATE TABLE IF NOT EXISTS Person (UserNum INTEGER PRIMARY KEY AUTOINCREMENT ,UserName NOT NULL, UserDiscriminator NOT NULL, UserCurrency, UserExp)''')     #Executing the command. So the action will be applied to database
+cursor.execute('''CREATE TABLE IF NOT EXISTS Person (UserNum INTEGER PRIMARY KEY AUTOINCREMENT ,UserName NOT NULL, UserDiscriminator NOT NULL, UserCurrency, UserExp, isAdmin BOOLEAN FALSE )''')     #Executing the command. So the action will be applied to database
+cursor.execute('''CREATE TABLE IF NOT EXISTS Roles (RoleName, RoleAvailable BOOLEAN)''')       #Adding the roles table to database
+
+
+
 entryDiscriminators = []
 def getEntries():
     entryDiscriminators.clear()
@@ -21,12 +25,12 @@ def getEntries():
         entryDiscriminators.append(str(uDisc)[2:6])
 
 
-def saveEntry(userName, userDiscriminator, userCurrency, userExp):
+def saveEntry(userName, userDiscriminator, userCurrency, userExp, isAdmin):
 #Putting things to database TABLE
     getEntries()
 
     if str(userDiscriminator) not in entryDiscriminators:
-        cursor.execute("INSERT INTO Person(UserName,UserDiscriminator,UserCurrency,UserExp) VALUES (?,?,?,?)",(userName, userDiscriminator, 100, 10))
+        cursor.execute("INSERT INTO Person(UserName,UserDiscriminator,UserCurrency,UserExp) VALUES (?,?,?,?)",(userName, userDiscriminator, 100, 10, ))
         connection.commit()
         print("User " + userName +" saved to database")
     else:
@@ -73,3 +77,17 @@ def getExp(userDiscriminator):
 def addExp(userDiscriminator, newExp):
     cursor.execute('UPDATE Person SET UserExp=(?) WHERE UserDiscriminator=(?)',(newExp, userDiscriminator))
     connection.commit()
+
+
+################################################    ROLE SYSTEM FUNCTIONS   #######################################################
+
+def saveRoles(roles):
+    for role in roles:
+        cursor.execute("INSERT INTO Roles(RoleName, RoleAvailable) VALUES(?,?)",(str(role),roles[role]))
+
+def getRoles():
+    cursor.execute("SELECT RoleName FROM Roles WHERE RoleAvailable = 1")
+    return cursor.fetchall()
+
+def clearRoles():
+    cursor.execute("DELETE FROM Roles")
