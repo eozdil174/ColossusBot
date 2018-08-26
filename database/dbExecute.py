@@ -17,6 +17,13 @@ while exit != True:
         uNum = input("\nUser Number: ")
         db.deleteEntry(uNum)
 
+    if answer == 'len':
+        message = input("\nMessage: ")
+        print (len(message))
+
+    if answer == 'Test Mode':
+        db.addExp('9600', 120)
+        print ("Done")
     if answer == 'Show Entries':
 
         print(db.getEntries())

@@ -19,7 +19,6 @@ class eventManagement(object):
         self.desc = desc
         self.clock = clock
         self.desTime = desTime
-        self.event_active = event_active
         self.event_message = event_message
 
     #Creating the custom embed for the event

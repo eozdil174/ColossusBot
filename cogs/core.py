@@ -78,14 +78,10 @@ class Core(object):
 
     #Trigger which activates on every message
     async def on_message(self, message):
+        msg = message.content   #Geting the message
 
-        msg = message.content           #makes user message a variable
-        currentExp = DB.getExp(message.author.discriminator)
-        points = (len(message.content) * 0.4)
-        newExp = currentExp + points
-        DB.addExp(message.author.discriminator, newExp)
-
-        print("added"+ str(newExp)+ "exp to user")
+        exp = len(msg) * 0.3    #Calculating the experience (0.3 exp per character)
+        DB.addExp(message.author.discriminator, exp)    #Adding the exp to user via DBLib
 
         #Foreign invite preventation feature
         if "discord.gg" in msg:         #tests for "discord.gg" in message
