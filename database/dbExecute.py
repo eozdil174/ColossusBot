@@ -21,6 +21,11 @@ while exit != True:
         message = input("\nMessage: ")
         print (len(message))
 
+    if answer == 'userData':
+        print(db.getUserData('9600'))
+
+
+    
     if answer == 'Test Mode':
         db.addExp('9600', 120)
         print ("Done")

@@ -28,7 +28,7 @@ def saveEntry(userName, userDiscriminator, userCurrency, userExp):
     getEntries()
 
     if str(userDiscriminator) not in entryDiscriminators:
-        cursor.execute("INSERT INTO Person(UserDiscriminator,UserName,UserCurrency,UserExp, UserLevel, isAdmin) VALUES (?,?,?,?,?,?)",(userDiscriminator, userName, 100, 10,0,False,))
+        cursor.execute("INSERT INTO Person(UserDiscriminator,UserName,UserCurrency,UserExp, UserLevel, isAdmin) VALUES (?,?,?,?,?,?)",(userDiscriminator, userName, 100, 1000, 1, False,))
         connection.commit()
         print("User " + userName +" saved to database")
     else:
@@ -70,18 +70,25 @@ def giveCookies(donator, cookieVal, userDiscriminator):
 ############################################    EXPERIENCE SYSTEM FUNCTIONS  ####################################################
 
 def getExp(userDiscriminator):
-    cursor.execute('SELECT UserExp From Person WHERE UserDiscriminator=(?)',(userDiscriminator,)) #!!!! The comma is here to prevent function overload problem !!!!#
+    cursor.execute('SELECT UserExp, UserLevel From Person WHERE UserDiscriminator=(?)',(userDiscriminator,)) #!!!! The comma is here to prevent function overload problem !!!!#
     userExp = cursor.fetchone()
     return userExp
 
 def addExp(userDiscriminator, newExp):
-    oldExp = getExp(userDiscriminator)
-    currentExp = newExp + oldExp[0]
+    oldData = getExp(userDiscriminator)
+    currentExp = newExp + float(oldData[0])
+    userLevel = int(oldData[1])
 
-    cursor.execute('UPDATE Person SET UserExp=(?) WHERE UserDiscriminator=(?)',(currentExp, userDiscriminator))
+    if currentExp >= float(oldData[1]*1000):   #If userExp is bigger or equal to target exp (oldData[1] is userLevel)
+        userLevel = int(oldData[1]) + 1
+
+    cursor.execute('UPDATE Person SET UserExp=(?), UserLevel=(?) WHERE UserDiscriminator=(?)',(currentExp, userLevel, userDiscriminator))
     connection.commit()
 
-
+def getUserData(userDiscriminator):
+    cursor.execute('SELECT UserExp, UserLevel FROM Person WHERE UserDiscriminator=(?)',(userDiscriminator,))
+    userData = cursor.fetchone()
+    return userData
 ################################################    ROLE SYSTEM FUNCTIONS   #######################################################
 
 def saveRoles(roles):
