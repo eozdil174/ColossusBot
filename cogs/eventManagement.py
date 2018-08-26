@@ -10,10 +10,6 @@ import asyncio
 from discord.ext import commands
 from discord.utils import get
 import datetime, time
-import sys
-sys.path.append("C://Users//eozdi//Documents//ColossusBot//database")
-import DBLib as db
-
 
 class eventManagement(object):
 
