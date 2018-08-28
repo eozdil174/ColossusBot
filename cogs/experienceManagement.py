@@ -32,6 +32,19 @@ class experienceManagement():
 
     @commands.command(pass_context=True)
     async def showExp(self, message):
+        pictures = {
+            '0'  : 'https://preview.ibb.co/bXyjv9/0.png' ,
+            '10' : 'https://preview.ibb.co/fHuMsp/10.png',
+            '20' : 'https://preview.ibb.co/cfBedU/20.png',
+            '30' : 'https://preview.ibb.co/kpEhyU/30.png',
+            '40' : 'https://preview.ibb.co/igOsyU/40.png',
+            '50' : 'https://preview.ibb.co/jYwyNp/50.png',
+            '60' : 'https://preview.ibb.co/mttjv9/60.png',
+            '70' : 'https://preview.ibb.co/dtdv2p/70.png',
+            '80' : 'https://preview.ibb.co/mi1b8U/80.png',
+            '90' : 'https://preview.ibb.co/ciaga9/90.png'
+        }
+
         userData = db.getUserExp(message.message.author.discriminator)     #Getting the exp of the user
 
         userExp = float(userData[0])       #Assigning experience
@@ -46,25 +59,18 @@ class experienceManagement():
         lineDrawExp = int((userExp - ((userLevel - 1) * 1000)) / 100)     #It basically does this ; userExp = 5865.6
                                                                                                 # (userLevel(It's 6) - 1) * 1000 = 5000
                                                                                                 # lineDrawExp = 5865.6 - 5000 = 865.6
-        for i in range(10):                                                                     # int(865.6 / 100) = 8 . We will use that 8
-            if i == lineDrawExp:            #This loop creates the line system.
-                line += 'o'                 #That might get replaced with premade .png files
-            elif i < lineDrawExp:
-                line += '='
-            elif i > lineDrawExp:
-                line += '-'
-
+        image =  pictures[str(lineDrawExp * 10)]                                                                                       # int(865.6 / 100) = 8 . We will use that 8
 
         embed = discord.Embed(colour=discord.Colour(0x53ad80))              #Creating the experience embed
 
         embed.set_author(name=message.message.author)
         embed.set_footer(text="ColossusBot")
-
+        embed.set_image(url = image)
         embed.add_field(name="➡️", value=("Your current experience is : **%d**" % int(userExp)))
-        embed.add_field(name="🔢", value=("You are level **%d**" % int(userLevel)))
+        embed.add_field(name="🔢", value=("You are level **%d**" % (int(userLevel) - 1)))
         embed.add_field(name="☑️", value=("You will level up after aproximately **__%d__** messages" % int(remainingExp / 12)), inline=True)
 
-        embed.add_field(name="↗️", value=("Your current state **%s**" % line), inline=True)
+        embed.add_field(name="↗️", value=("Your current state"))
 
         await self.bot.say(embed=embed)
 

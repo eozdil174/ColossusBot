@@ -11,18 +11,6 @@ import sys
 sys.path.append("C://Users//eozdi//Documents//ColossusBot//database")
 import DBLib as db
 
-def ifAdmin(message):
-    user = message.message.author
-    adminRoles = ["Admin", "Staff", "Janitor", "Intern", "The Shop Owner"]
-    userRoles = list(set(str(role) for role in user.roles) & set(adminRoles))
-
-
-    if len(userRoles) >= 1 and len(userRoles) != 0:                  #Most stupid code I've ever written. But it works. And it's logical(!)...
-        return True
-    else:
-        print (user.display_name + ' #' + user.discriminator + " tried to use an admin command !")
-        return False
-
 
 class roleManagement(object):
 
@@ -75,7 +63,7 @@ class roleManagement(object):
 
     @commands.command(brief="Getting all the roles", pass_context=True)
     async def getRoles(self, message):
-        if ifAdmin(message):
+        if db.ifAdmin(message.message.author.discriminator):
             self.roles = db.getRoles()
 
             specialRoles = ["Admin", "Bot", "@everyone", "Intern", "Event Creator"]
