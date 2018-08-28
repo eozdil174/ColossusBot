@@ -1,5 +1,8 @@
 #Import the required database
 import sqlite3 as sqldb
+import sys
+sys.path.append('C:\\Users\\eozdi\\Documents\\ColossusBot\\cogs')
+from experienceManagement import experienceManagement
 
 #Connect to the database. If the database doesn't exists if will be automatically created
 connection = sqldb.connect('C:\\Users\\eozdi\\Documents\\ColossusBot\\database\\serverDatabase.db')
@@ -10,6 +13,22 @@ cursor = connection.cursor()
 #Creating a database table or checking the database
 cursor.execute('''CREATE TABLE IF NOT EXISTS Person (UserDiscriminator NOT NULL PRIMARY KEY ,UserName NOT NULL, UserCurrency, UserExp, UserLevel, isAdmin BOOLEAN FALSE )''')     #Executing the command. So the action will be applied to database
 cursor.execute('''CREATE TABLE IF NOT EXISTS Roles (RoleName, RoleAvailable BOOLEAN)''')       #Adding the roles table to database
+
+#######################################   USERBASE FUNCTIONS  #####################################################
+
+def ifAdmin(userDisc):
+    cursor.execute('SELECT isAdmin FROM Person WHERE UserDiscriminator=(?)', (userDisc,))
+    isAdmin = cursor.fetchone()
+
+    if isAdmin:
+        return True
+    else:
+        return False
+
+def getEntry(userDisc):
+    cursor.execute('SELECT UserName FROM Person WHERE UserDiscriminator=(?)', (userDisc,))
+    userName = cursor.fetchone()
+    return userName
 
 entryDiscriminators = []
 def getEntries():
@@ -24,7 +43,7 @@ def getEntries():
 
 
 def saveEntry(userName, userDiscriminator, userCurrency, userExp):
-#Putting things to database TABLE
+
     getEntries()
 
     if str(userDiscriminator) not in entryDiscriminators:
@@ -35,7 +54,7 @@ def saveEntry(userName, userDiscriminator, userCurrency, userExp):
         print("User " + userName + " exists. Passing the entry")
         pass
 
-#Reading from the database TABLE
+
 def deleteEntry(userDiscriminator):
 
     ans = input("The entry which has " + userDiscriminator + " Will be deleted. Are you sure ?( Write YES if you accept ) \n Answer: ")
@@ -50,6 +69,7 @@ def getCookies(userDiscriminator):
     cursor.execute('SELECT UserCurrency FROM Person WHERE UserDiscriminator=(?)',(userDiscriminator,))
     cookies = cursor.fetchone()[0]
     return cookies
+
 
 def giveCookies(donator, cookieVal, userDiscriminator):
 
@@ -74,30 +94,46 @@ def getExp(userDiscriminator):
     userExp = cursor.fetchone()
     return userExp
 
+
 def addExp(userDiscriminator, newExp):
     oldData = getExp(userDiscriminator)
-    currentExp = newExp + float(oldData[0])
+    currentExp = float(newExp) + float(oldData[0])
     userLevel = int(oldData[1])
 
     if currentExp >= float(oldData[1]*1000):   #If userExp is bigger or equal to target exp (oldData[1] is userLevel)
         userLevel = int(oldData[1]) + 1
+        cursor.execute('UPDATE Person SET UserExp=(?), UserLevel=(?) WHERE UserDiscriminator=(?)',(currentExp, userLevel, userDiscriminator))
+        connection.commit()
+        return True
 
-    cursor.execute('UPDATE Person SET UserExp=(?), UserLevel=(?) WHERE UserDiscriminator=(?)',(currentExp, userLevel, userDiscriminator))
+    else:
+        cursor.execute('UPDATE Person SET UserExp=(?), UserLevel=(?) WHERE UserDiscriminator=(?)',(currentExp, userLevel, userDiscriminator))
+        connection.commit()
+        return False
+
+
+def removeExp(userDiscriminator, amount):
+    currentExp = int(getUserExp(userDiscriminator)[0])
+    newExp = currentExp - int(amount)
+    cursor.execute('UPDATE Person SET UserExp=(?) WHERE UserDiscriminator=(?)', (newExp, userDiscriminator))
     connection.commit()
 
-def getUserData(userDiscriminator):
+def getUserExp(userDiscriminator):
     cursor.execute('SELECT UserExp, UserLevel FROM Person WHERE UserDiscriminator=(?)',(userDiscriminator,))
     userData = cursor.fetchone()
     return userData
+
 ################################################    ROLE SYSTEM FUNCTIONS   #######################################################
 
 def saveRoles(roles):
     for role in roles:
         cursor.execute("INSERT INTO Roles(RoleName, RoleAvailable) VALUES(?,?)",(str(role),roles[role]))
 
+
 def getRoles():
     cursor.execute("SELECT RoleName FROM Roles WHERE RoleAvailable = 1")
     return cursor.fetchall()
+
 
 def clearRoles():
     cursor.execute("DELETE FROM Roles")

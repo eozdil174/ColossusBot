@@ -81,7 +81,9 @@ class Core(object):
         msg = message.content   #Geting the message
 
         exp = len(msg) * 0.3    #Calculating the experience (0.3 exp per character)
-        DB.addExp(message.author.discriminator, exp)    #Adding the exp to user via DBLib
+        levelUp = DB.addExp(message.author.discriminator, exp)    #Adding the exp to user via DBLib. Also checking if user has leveled up via levelUp variable.
+        if levelUp:
+            await self.bot.send_message(message.channel ,("User " + message.author.display_name + " has leveled up !"))                                                                                                                    #This might be a horrible solution
 
         #Foreign invite preventation feature
         if "discord.gg" in msg:         #tests for "discord.gg" in message
