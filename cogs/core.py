@@ -5,6 +5,9 @@ That file contains some basic and useful features for the bot.
 import discord
 from discord.ext import commands
 import datetime
+import sys
+sys.path.append('C:\\Users\\eozdi\\Documents\\ColossusBot\\database')
+import DBLib as DB
 
 class Core(object):
 
@@ -75,8 +78,12 @@ class Core(object):
 
     #Trigger which activates on every message
     async def on_message(self, message):
+        msg = message.content   #Geting the message
 
-        msg = message.content           #makes user message a variable
+        exp = len(msg) * 0.3    #Calculating the experience (0.3 exp per character)
+        levelUp = DB.addExp(message.author.discriminator, exp)    #Adding the exp to user via DBLib. Also checking if user has leveled up via levelUp variable.
+        if levelUp:
+            await self.bot.send_message(message.channel ,("User " + message.author.display_name + " has leveled up !"))                                                                                                                    #This might be a horrible solution
 
         #Foreign invite preventation feature
         if "discord.gg" in msg:         #tests for "discord.gg" in message

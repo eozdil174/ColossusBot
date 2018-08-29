@@ -19,6 +19,7 @@ TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfnW3A.AeK5fqu5fl4dM5RlJvk8JTQRtnY'           
 @bot.event                                                                                              #Setting basic bot things and going to load cogs
 async def on_ready():
     await bot.change_presence(game=discord.Game(name='with people'))
+    print("Version " + discord.__version__)
     print("Alright. Ready for the fly")
     await loadCogs()
 
@@ -34,6 +35,7 @@ async def loadCogs():                                                           
 
 def Main():                                                                                             #Main function to run logging system and starting the bot up
     logging.basicConfig(level=logging.INFO)
+
     bot.run(TOKEN)
 
 if __name__ == '__main__':                                                                              #Checking if the main file called. Whic is that one
