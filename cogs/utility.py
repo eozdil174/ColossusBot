@@ -49,7 +49,7 @@ class Utility(object):
         else:       #For every other user
             await self.bot.send_message(discord.Object(id='450150175290163221'), "I don't think so")
 
-
+    
 
 #Setting the bot up
 def setup(bot):

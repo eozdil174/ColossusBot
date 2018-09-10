@@ -10,15 +10,20 @@ from os.path import isfile , join
 from discord.ext import commands
 import logging
 import traceback
+import json
 
-bot = commands.Bot(command_prefix='-', description='A bot for Cafe Tesla server')                       #Defining the bot
+
+with open('botConfig.json', 'r') as data:           #Using Json library to load the botConfig file ('r' stands for "read". So the file won't be affected from any kind of write process)
+    config = json.load(data)             #Writing the data to config array
+
+bot = commands.Bot(command_prefix='-', description='A bot for all your needs')                       #Defining the bot
 bot.remove_command('help')                                                                              #Removing the default help command  to replace my custom one
 
-TOKEN = 'NDUyNjg5MjQzODY1NjEyMzA0.DfnW3A.AeK5fqu5fl4dM5RlJvk8JTQRtnY'                                   #Bot's token
+TOKEN = config["token"]       #Getting the token from the Json file
 
 @bot.event                                                                                              #Setting basic bot things and going to load cogs
 async def on_ready():
-    await bot.change_presence(game=discord.Game(name='with people'))
+    await bot.change_presence(game=discord.Game(name=config["game"]))
     print("Version " + discord.__version__)
     print("Alright. Ready for the fly")
     await loadCogs()
