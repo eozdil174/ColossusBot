@@ -39,9 +39,8 @@ class Utility(object):
     #Some fun command to post a special message
     @commands.command(brief="Some funny thing to play with. ADMINS ONLY !", pass_context=True)
     async def sendMsg(self, message):
-        print(message.message.author)
         if message.message.author.discriminator == '9600':
-            await self.bot.send_message(discord.Object(id='450150175290163221'), message.message.content[8:])
+            await self.bot.send_message(discord.Object(id='487932190433476610'), message.message.content[8:])
 
         elif message.message.author.id == '231815469848461314':         #That's you Foun !
             await self.bot.send_message(discord.Object(id='450150175290163221'), "I'm not taking orders from you")
@@ -49,7 +48,7 @@ class Utility(object):
         else:       #For every other user
             await self.bot.send_message(discord.Object(id='450150175290163221'), "I don't think so")
 
-    
+
 
 #Setting the bot up
 def setup(bot):

@@ -13,8 +13,16 @@ import traceback
 import json
 
 
-with open('botConfig.json', 'r') as data:           #Using Json library to load the botConfig file ('r' stands for "read". So the file won't be affected from any kind of write process)
-    config = json.load(data)             #Writing the data to config array
+try:
+    with open('botConfig.json', 'r') as data:           #Using Json library to load the botConfig file ('r' stands for "read". So the file won't be affected from any kind of write process)
+        config = json.load(data)             #Writing the data to config array
+except:
+    import botSetup                     #We will call the botSetup.py script
+    botSetup.showData()
+
+finally:
+    with open('botConfig.json', 'r') as data:         #And we will read the data from json again. Whatever happens this will be executed
+        config = json.load(data)
 
 bot = commands.Bot(command_prefix='-', description='A bot for all your needs')                       #Defining the bot
 bot.remove_command('help')                                                                              #Removing the default help command  to replace my custom one
