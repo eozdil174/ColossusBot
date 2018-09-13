@@ -42,12 +42,12 @@ def getEntries():
         entryDiscriminators.append(str(uDisc)[2:6])
 
 
-def saveEntry(userName, userDiscriminator, userCurrency, userExp):
+def saveEntry(userName, userDiscriminator):
 
     getEntries()
 
     if str(userDiscriminator) not in entryDiscriminators:
-        cursor.execute("INSERT INTO Person(UserDiscriminator,UserName,UserCurrency,UserExp, UserLevel, isAdmin) VALUES (?,?,?,?,?,?)",(userDiscriminator, userName, 100, 1000, 1, False,))
+        cursor.execute("INSERT INTO Person(UserDiscriminator,UserName,UserCurrency,UserExp, UserLevel, isAdmin) VALUES (?,?,?,?,?,?)",(userDiscriminator, userName, 100, 1000, 2, False,))
         connection.commit()
         print("User " + userName +" saved to database")
     else:
@@ -57,12 +57,9 @@ def saveEntry(userName, userDiscriminator, userCurrency, userExp):
 
 def deleteEntry(userDiscriminator):
 
-    ans = input("The entry which has " + userDiscriminator + " Will be deleted. Are you sure ?( Write YES if you accept ) \n Answer: ")
-    if ans == 'YES':
-
-        cursor.execute("DELETE FROM Person WHERE UserDiscriminator = (?)", (userDiscriminator))
-        connection.commit()
-        print("Entry deleted with following number : " + userDiscriminator)
+    cursor.execute("DELETE FROM Person WHERE UserDiscriminator = (?)", (userDiscriminator))
+    connection.commit()
+    print("Entry deleted with following discriminator : " + userDiscriminator)
 
 
 def getCookies(userDiscriminator):
@@ -104,7 +101,7 @@ def addExp(userDiscriminator, newExp):
         userLevel = int(oldData[1]) + 1
         cursor.execute('UPDATE Person SET UserExp=(?), UserLevel=(?) WHERE UserDiscriminator=(?)',(currentExp, userLevel, userDiscriminator))
         connection.commit()
-        return True
+        return (True, userLevel-1)      #The current level is always 1 more than the original level
 
     else:
         cursor.execute('UPDATE Person SET UserExp=(?), UserLevel=(?) WHERE UserDiscriminator=(?)',(currentExp, userLevel, userDiscriminator))

@@ -47,26 +47,20 @@ class Core(object):
         await self.bot.say(embed=embed)                 #Printing the embed
 
 
+    @commands.command(pass_context=True)            #Sending a invite likn via dm message to whoever types the commands
+    async def invite(self, message):
+        await self.bot.send_message(message.message.author, "You can invite me via this link https://discordapp.com/oauth2/authorize?client_id=452689243865612304&scope=bot")
+
     #Trigger which activates when new member comes
     async def on_member_join(self, member):
 
-        welcomeMessage = (member.mention + " Welcome to Café Tesla. Please have a seat. Your coffee will be served in a minute. \n"+
+        embed = discord.Embed(title="**New Member Joined !**", colour=discord.Colour(0x53ad80), timestamp=datetime.datetime.utcfromtimestamp(int(time.time())))
 
-                                            "\nWe have MBTI type tags available for everyone. If you want to put your type's tag on to your profile: go to #bot_interactions and type\n"+
-                                            "```.iam type```\n"+
+        embed.set_image(url="https://preview.ibb.co/e35VwU/Server_Banner.png")
 
-                                            '\nFor example ".iam INTP"\n' +
+        await self.bot.send_message(discord.Object(id='437654104827756544'), embed=embed)
 
-                                            "\nAlso we now have country tags. You can find the whole list of available countries by typing '.lsar 2' in #bot_interactions . If you can't see your country. Write it down in #feedback and it will be added as soon as possible\n" +
-
-                                            "\nIf you want to get notified when a VC event starts you can get the VC Squad role by simply typing \n"+
-                                            "```.iam VC Squad\n```"
-
-
-                                            "\nIf you need any help or questions you can ask them in #feedback channel. Have fun !\n")
-
-        await self.bot.send_message(discord.Object(id='437654104827756544'), welcomeMessage)
-
+        DB.saveEntry(member.display_name, member.discriminator)
     #A trigger which activates when a member leaves
     async def on_member_remove(self, member):
         embed = discord.Embed(colour=0x53ad80, description=(member.display_name + ' #' + member.discriminator + " left the server"))
@@ -75,6 +69,7 @@ class Core(object):
         embed.set_footer(text=("ID: "+ str(member.id) + ' • ' + str(datetime.datetime.now())))
 
         await self.bot.send_message(discord.Object(id='437688399755870208'), embed=embed)
+        DB.deleteEntry(member.discriminator)
 
     #Trigger which activates on every message
     async def on_message(self, message):
@@ -83,7 +78,7 @@ class Core(object):
         exp = len(msg) * 0.3    #Calculating the experience (0.3 exp per character)
         levelUp = DB.addExp(message.author.discriminator, exp)    #Adding the exp to user via DBLib. Also checking if user has leveled up via levelUp variable.
         if levelUp:
-            await self.bot.send_message(message.channel ,("User " + message.author.display_name + " has leveled up !"))                                                                                                                    #This might be a horrible solution
+            await self.bot.send_message(message.channel ,("%s has leveled up to %d ! 🎉" % (message.author.display_name, levelUp[1])))                                                                                                                    #This might be a horrible solution
 
         #Foreign invite preventation feature
         if "discord.gg" in msg:         #tests for "discord.gg" in message

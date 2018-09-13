@@ -36,14 +36,16 @@ class roleManagement(object):
         user = message.message.author               #Getting the user who wants to add role
         role = get(user.server.roles, name=message.message.content[9:])         #Getting the role which user wants to add
 
-        if not roles:                   #If the roles list is empty...
+        if not self.roles:                   #If the roles list is empty...
             get_roles(message)          #... get the roles by going back to that function
 
-        if (str(role) not in seriousRoles) and (str(role) in roles) and (role not in user.roles):           #Check if the role is safe to assign and user doesn't already have it
+        if ((str(role) in str(self.roles)) and (role not in user.roles)):           #Check if the role is safe to assign and user doesn't already have it
             await self.bot.add_roles(user , role)       #Add the role
             await self.bot.say("Done! You have " + str(role) + " now. You can use '-removeRole' command to remove an unwanted role")        #Output the process
+
         elif role in user.roles:                                    #If user has the role
             await self.bot.say("You already have that role")        #output again
+
         else:
             await self.bot.say("Sorry that role is not available")
 
