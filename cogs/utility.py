@@ -40,13 +40,11 @@ class Utility(object):
     @commands.command(brief="Some funny thing to play with. ADMINS ONLY !", pass_context=True)
     async def sendMsg(self, message):
         if message.message.author.discriminator == '9600':
-            await self.bot.send_message(discord.Object(id='487932190433476610'), message.message.content[8:])
-
-        elif message.message.author.id == '231815469848461314':         #That's you Foun !
-            await self.bot.send_message(discord.Object(id='450150175290163221'), "I'm not taking orders from you")
+            await self.bot.delete_message(message.message)
+            await self.bot.say(message.message.content[8:])
 
         else:       #For every other user
-            await self.bot.send_message(discord.Object(id='450150175290163221'), "I don't think so")
+            await self.bot.say("I don't think so")
 
 
 

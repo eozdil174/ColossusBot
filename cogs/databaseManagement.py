@@ -18,7 +18,7 @@ class DatabaseManagement(object):
         server = ctx.message.server
 
         for user in server.members:
-            DB.saveEntry(user.display_name, user.discriminator, 100, 10)
+            DB.saveEntry(user.display_name, user.discriminator)
         await self.bot.say("Done!")
 
 
