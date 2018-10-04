@@ -15,11 +15,12 @@ class DatabaseManagement(object):
 
     @commands.command(pass_context=True)
     async def getPeople(self, ctx):
-        server = ctx.message.server
+        if DB.ifAdmin(ctx.message.author.discriminator):
+            server = ctx.message.server
 
-        for user in server.members:
-            DB.saveEntry(user.display_name, user.discriminator)
-        await self.bot.say("Done!")
+            for user in server.members:
+                DB.saveEntry(user.display_name, user.discriminator)
+            await self.bot.say("Done!")
 
 
     @commands.command(pass_context=True)

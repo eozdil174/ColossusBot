@@ -46,6 +46,17 @@ class Utility(object):
         else:       #For every other user
             await self.bot.say("I don't think so")
 
+    @commands.command(pass_context=True)
+    async def fixCustomerRole(self, message):
+        members = message.message.server.members
+        customerRole = get(message.message.author.server.roles, name="Customer")
+        for member in members:
+            if customerRole in member.roles:
+                print ("User has the role")
+            else:
+                await self.bot.add_roles(member, customerRole)
+                print ("Added role to " + str(member))
+
 
 
 #Setting the bot up
