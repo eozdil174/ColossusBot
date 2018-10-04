@@ -85,6 +85,24 @@ class eventManagement(object):
 
             await self.bot.edit_message(self.event_message, embed = end_embed)  #Editing the existing event message and posting the end message
             await self.bot.clear_reactions(self.event_message)                  #Clearing the reactions from that message
+
+            user = text.message.author                                        #Getting the user who wrote the command
+            event_creator_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
+
+                            #If user has the Event Creator role
+            role = get(user.server.roles, name="Event")     #Getting the "Event" role !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Change according to the server you are goint to use!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            members = text.message.server.members           #Getting all the members in the server
+            for member in members:                          #For every member in the server this will remove the role who has it
+                #If user has the role
+                if role in member.roles:
+                    await self.bot.remove_roles(member, role)   #Remove the role from the user
+                    print("\nRemoved the 'Event' role from " + str(member))
+                    continue
+                #If user doesn't has the role
+                else:
+                    continue
+
         else:
             await self.bot.say("You don't have the permission to do that !")
 
@@ -134,34 +152,6 @@ class eventManagement(object):
 
             else:
                 print("I don't know that")
-
-
-
-    #Removing the "Event" role from everyone
-    @commands.command(brief="Resets the Event role", pass_context = True)
-    async def eventRole_reset(self, text):
-        user = text.message.author                                        #Getting the user who wrote the command
-        event_creator_role = get(user.server.roles, name="Event Creator") #Getting the "Event Creator" role for the permission system
-
-        if event_creator_role in user.roles:                #If user has the Event Creator role
-            role = get(user.server.roles, name="Event")     #Getting the "Event" role !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Change according to the server you are goint to use!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            members = text.message.server.members           #Getting all the members in the server
-            for member in members:                          #For every member in the server this will remove the role who has it
-                #If user has the role
-                if role in member.roles:
-                    await self.bot.remove_roles(member, role)   #Remove the role from the user
-                    print("\nRemoved the 'Event' role from " + str(member))
-                    continue
-                #If user doesn't has the role
-                else:
-                    continue
-            await self.bot.send_message(text.message.channel ,"Done! Event role removed from all users.")
-        else:
-            await self.bot.send_message(text.message.channel ,user.mention + " You don't have the permission for doing that")
-
-
-
 
 
 #Setting the bot and the class up

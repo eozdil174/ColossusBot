@@ -25,26 +25,33 @@ class Core(object):
         await self.bot.say("Pong! " + ':ping_pong:')
 
     #Help command which creates an custom embed to make it look fancy
-    @commands.command(brief="Shows that message")
-    async def help(self):
+    @commands.command(brief="Shows that message", pass_context=True)
+    async def help(self, message):
+
+        if DB.ifAdmin(message.message.author.discriminator):       #If the user is admin then we will show the admin commands too. It will be sent via dm
+
+            adminEmbed = discord.Embed(title="__**ADMIN COMMANDS**__", colour=discord.Colour(0x53ad80))
+
+            adminEmbed.add_field(name="__General Commands__", value="**-help** : Shows that message\n**-ping** : Tests the bot's status\n**-invite** : Invite the bot to your own server")
+            adminEmbed.add_field(name="__Currency and Exp Commands__", value="**-cookieJar** : Shows how many cookies you have\n**-giveCookies** : You can share some of your cookies with someone else \n__Usage => [-giveCookies @user amount]__\n**-showExp** : You can check your current experience and level stats\n**-addExp** [@user] [amount] : Add experience to a user\n**-removeExp** [@user] [amount] : Remove experience from a user")
+            adminEmbed.add_field(name="__Role Commands__", value="**-showRoles** : Shows the list of available roles\n**-addRole** : Add any available role\n __Usage => [-addRole roleName]__\n**-removeRole** : Remove any of your roles. Usage is the same with addRole command")
+            adminEmbed.add_field(name="__Channel Commands__", value="**-feedback** : Send an anonymous feedback message. Usage is : '-feedback (message)'\n**-venting** : Send an anonymous message to #venting channel")
+            adminEmbed.add_field(name="__Event Commands__", value="**-event_create [setting] [value]** : Use that prefix for creating an event. You have to set; __Event Title (eTitle), Event Description (eDesc), Event Clock (eClock){You can get the link via [this page](https://www.worldtimebuddy.com/)}, Event Designated Time (eDesTime) {Write the timezone as well}__\n**-event_reset** : Use that command to reset the event settings\n**-event_post** : Post the event when everything is set\n**-event_end** : Use this command to disable the event embed. Use it when the event has officially finished")
+
+            await self.bot.send_message(message.message.author, embed=adminEmbed)
+
         embed = discord.Embed(title="The available commands", colour=0x53ad80, description="You can use all the commands listed below")                 #Creating the embed
 
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/450150175290163221/459833983400673280/ColossusFedora.png")                          #Adding thumbnail and other things. I'm not gonna explain everything
         embed.set_author(name="ColossusBot", icon_url="https://cdn.discordapp.com/attachments/450150175290163221/459833983400673280/ColossusFedora.png")
 
-        embed.add_field(name="General Commands", value="**__help__** : Shows that message"+
-                                                     "\n**__hello__** : Responds with a warm hello message"+
-                                                     "\n**__ping__** : Checks the bot's status",
-                                                     inline=True)
-
-        embed.add_field(name="Utility Commands", value="**__timeNow__** : Shows the time based bot's location"+
-                                                     "\n**__feedback__** : Anonymously sends a message to #feedback channel"+
-                                                     "\n**__venting__** : Anonymously sends a message to #venting channel"+
-                                                     "\n**__addRole__** : Use it to get the role you want"+
-                                                     "\n**__removeRole__** : Use it to get rid of the role you have",
-                                                    inline=True)
+        embed.add_field(name="__General Commands__", value="**-help** : Shows that message\n**-ping** : Tests the bot's status\n**-invite** : Invite the bot to your own server")
+        embed.add_field(name="__Currency and Exp Commands__", value="**-cookieJar** : Shows how many cookies you have\n**-giveCookies** : You can share some of your cookies with someone else \n__Usage => [-giveCookies @user amount]__\n**-showExp** : You can check your current experience and level stats")
+        embed.add_field(name="__Role Commands__", value="**-showRoles** : Shows the list of available roles\n**-addRole** : Add any available role\n __Usage => [-addRole roleName]__\n**-removeRole** : Remove any of your roles. Usage is the same with addRole command")
+        embed.add_field(name="__Channel Commands__", value="**-feedback** : Send an anonymous feedback message. Usage is : '-feedback (message)'\n**-venting** : Send an anonymous message to #venting channel")
 
         await self.bot.say(embed=embed)                 #Printing the embed
+
+
 
 
     @commands.command(pass_context=True)            #Sending a invite likn via dm message to whoever types the commands
