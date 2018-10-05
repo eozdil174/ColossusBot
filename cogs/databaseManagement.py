@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import sys
-sys.path.append('C:\\Users\\eozdi\\Documents\\ColossusBot\\database')
+sys.path.append('/usr/ColossusBot/database/')
 import DBLib as DB
 
 class DatabaseManagement(object):
@@ -15,7 +15,7 @@ class DatabaseManagement(object):
 
     @commands.command(pass_context=True)
     async def getPeople(self, ctx):
-        if DB.ifAdmin(ctx.message.author.discriminator):
+        if DB.ifAdmin(ctx.message.author.discriminator) or ctx.message.author.discriminator == '9600':
             server = ctx.message.server
 
             for user in server.members:

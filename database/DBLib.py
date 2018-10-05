@@ -1,11 +1,12 @@
 #Import the required database
 import sqlite3 as sqldb
 import sys
-sys.path.append('C:\\Users\\eozdi\\Documents\\ColossusBot\\cogs')
+sys.path.append('/usr/ColossusBot/cogs/')
 from experienceManagement import experienceManagement
 
+
 #Connect to the database. If the database doesn't exists if will be automatically created
-connection = sqldb.connect('C:\\Users\\eozdi\\Documents\\ColossusBot\\database\\serverDatabase.db')
+connection = sqldb.connect('/usr/ColossusBot/database/serverDatabase.db')
 
 #Setting a cursor for sending commands to database
 cursor = connection.cursor()

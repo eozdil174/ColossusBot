@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 import sys
-sys.path.append('C:\\Users\\eozdi\\Documents\\ColossusBot\\database')
+sys.path.append('/usr/ColossusBot/database/')
 import DBLib as db
+
 
 class experienceManagement():
     def __init__(self, bot):
