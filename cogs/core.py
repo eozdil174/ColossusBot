@@ -4,7 +4,7 @@ That file contains some basic and useful features for the bot.
 
 import discord
 from discord.ext import commands
-import datetime
+import datetime, time
 import sys
 sys.path.append('/usr/ColossusBot/database/')
 import DBLib as DB
