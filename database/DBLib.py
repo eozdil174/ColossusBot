@@ -58,7 +58,7 @@ def saveEntry(userName, userDiscriminator):
 
 def deleteEntry(userDiscriminator):
 
-    cursor.execute("DELETE FROM Person WHERE UserDiscriminator = (?)", (userDiscriminator))
+    cursor.execute("DELETE FROM Person WHERE UserDiscriminator = (?)", (userDiscriminator,))
     connection.commit()
     print("Entry deleted with following discriminator : " + userDiscriminator)
 
