@@ -21,7 +21,7 @@ class Core(object):
         await self.bot.say("Hello! " + ctx.message.author.mention)
 
     #Basic function for testing the bot's status
-    @commands.command(brief="Use it only if you are thinkning bot is going to die")
+    @commands.command(brief="Use it only if you are thinking bot is going to die")
     async def ping(self):
         await self.bot.say("Pong! " + ':ping_pong:')
 
@@ -67,6 +67,9 @@ class Core(object):
         embed.set_image(url="https://preview.ibb.co/e35VwU/Server_Banner.png")
 
         await self.bot.send_message(discord.Object(id='437654104827756544'), embed=embed)
+
+        role = get(user.server.roles, name="Citizen of Turtlepolis")
+        await self.bot.add(role, user)
 
         DB.saveEntry(member.display_name, member.discriminator)
     #A trigger which activates when a member leaves
