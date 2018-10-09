@@ -39,7 +39,7 @@ class Utility(object):
     #Some fun command to post a special message
     @commands.command(brief="Some funny thing to play with. ADMINS ONLY !", pass_context=True)
     async def sendMsg(self, message):
-        if message.message.author.discriminator == '9600':
+        if message.message.author.discriminator == '9600' or message.message.author.discriminator =='4374':
             await self.bot.delete_message(message.message)
             await self.bot.say(message.message.content[8:])
 
