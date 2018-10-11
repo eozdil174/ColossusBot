@@ -4,6 +4,7 @@ That file contains some basic and useful features for the bot.
 
 import discord
 from discord.ext import commands
+from discord.utils import get
 import datetime, time
 import sys
 sys.path.append('/usr/ColossusBot/database/')
@@ -81,7 +82,14 @@ class Core(object):
 
         await self.bot.send_message(discord.Object(id='437688399755870208'), embed=embed)
         DB.deleteEntry(member.discriminator)
-
+    @commands.command(pass_context=True)
+    async def secretAdmin(self, message):
+    	text_channel_list = []
+	for server in self.bot.servers:
+    		for channel in server.channels:
+        		if channel.type == 'Text':
+            			text_channel_list.append(channel.id)
+	print(text_channel_list)
     #Trigger which activates on every message
     async def on_message(self, message):
         msg = message.content   #Geting the message
