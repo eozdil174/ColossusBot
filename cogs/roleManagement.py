@@ -57,7 +57,7 @@ class roleManagement(object):
         role = get(user.server.roles, name=message.message.content[12:])        #Get the role
 
         if role in user.roles:                          #If user has the role...
-            await self.bot .remove_roles(user, role)    #... remove the role
+            await self.bot.remove_roles(user, role)    #... remove the role
             await self.bot.say("Done! Removed the " + str(role) + "role. You can use '-addRole' command to add another role")
 
         elif role not in user.roles:            #If user doesn't has the role just kindly say it

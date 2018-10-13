@@ -30,12 +30,6 @@ class Utility(object):
         except:
             print("I can't delete that message!")
 
-    #Anonymous venting feature
-    @commands.command(brief="Send an anoymous message to #venting channel", pass_context=True)
-    async def venting(self, message):
-        await self.bot.send_message(discord.Object(id='454969449590685696'), message.message.content[8:])     #Post the message to #venting channel
-        await self.bot.say("Alright posted to #venting !")
-
     #Some fun command to post a special message
     @commands.command(brief="Some funny thing to play with. ADMINS ONLY !", pass_context=True)
     async def sendMsg(self, message):

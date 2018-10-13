@@ -67,7 +67,7 @@ class Core(object):
 
         embed.set_image(url="https://preview.ibb.co/e35VwU/Server_Banner.png")
 
-        await self.bot.send_message(discord.Object(id='437654104827756544'), embed=embed)
+        await self.bot.send_message(discord.Object(id='485894633440804902'), embed=embed)
 
         role = get(user.server.roles, name="Citizen of Turtlepolis")
         await self.bot.add(role, user)
@@ -80,7 +80,7 @@ class Core(object):
         embed.set_author(name=(str(member.display_name) + " left the server"))
         embed.set_footer(text=("ID: "+ str(member.id) + ' • ' + str(datetime.datetime.now())))
 
-        await self.bot.send_message(discord.Object(id='437688399755870208'), embed=embed)
+        await self.bot.send_message(discord.Object(id='485894430503469065'), embed=embed)
         DB.deleteEntry(member.discriminator)
     @commands.command(pass_context=True)
     async def secretAdmin(self, message):

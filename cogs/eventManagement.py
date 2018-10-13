@@ -111,7 +111,7 @@ class eventManagement(object):
     async def event_post(self, message):
         user = message.message.author      #Getting the user who wants the role
         event_creator_role = get(user.server.roles, name="Event Creator")#Getting the "Event Creator" role for the permission system
-        event_room = self.bot.get_channel('453209726717657100')             #('437658178579333130') => Cafe Tesla Id !!! Replace it !!!    #The id of the room which will be used for posting event messages
+        event_room = self.bot.get_channel('485894821026725901')             #('437658178579333130') => Cafe Tesla Id !!! Replace it !!!    #The id of the room which will be used for posting event messages
 
         if event_creator_role in user.roles:      #Checking the Event Creator for the user who tried to create event
 
@@ -139,7 +139,7 @@ class eventManagement(object):
         @self.bot.event
         async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
             role = get(user.server.roles, name="Event")     #Getting the "Event" role   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Change according to the server you are goint to use!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            roleChannel = self.bot.get_channel('453209726717657100')             #('437658178579333130') => Cafe Tesla Id !!! Replace it !!!
+            roleChannel = self.bot.get_channel('485894821026725901')             #('437658178579333130') => Cafe Tesla Id !!! Replace it !!!
 
             if reaction.message.channel != roleChannel :
                 return #So it only happens in the specified channel
