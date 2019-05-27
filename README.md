@@ -26,7 +26,7 @@ You can invite the bot to your server by using [this link](https://discordapp.co
 
 * You need SQLite files to run database. You can get it from [here](https://www.sqlite.org/download.html)
 
-## How to host the bot on my computer ?
+## How can I host the bot on my computer ?
 -----------------------------------------
 
 1. Run botSetup.py and enter the bot settings. The basic commands are available in the script itself
